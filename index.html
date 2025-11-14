@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -12,342 +11,339 @@
             box-sizing: border-box;
         }
 
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
 
-    body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        background: #000;
-        color: #fff;
-        overflow-x: hidden;
-    }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
 
-    .container {
-        max-width: 500px;
-        margin: 0 auto;
-    }
+        header {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
 
-    header {
-        text-align: center;
-        padding: 20px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
 
-    h1 {
-        font-size: 24px;
-        margin-bottom: 5px;
-    }
+        .subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
 
-    .subtitle {
-        font-size: 14px;
-        opacity: 0.9;
-    }
+        .camera-container {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            background: #1a1a1a;
+            overflow: hidden;
+        }
 
-    .camera-container {
-        position: relative;
-        width: 100%;
-        height: 500px;
-        background: #1a1a1a;
-        overflow: hidden;
-    }
+        #video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
-    #video {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
 
-    #canvas {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-    }
+        .point-marker {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: white;
+            border: 3px solid white;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.3), 0 0 20px rgba(255, 255, 255, 0.8);
+            z-index: 10;
+        }
 
-    .point-marker {
-        position: absolute;
-        width: 12px;
-        height: 12px;
-        background: white;
-        border: 3px solid white;
-        border-radius: 50%;
-        transform: translate(-50%, -50%);
-        box-shadow: 0 0 0 2px rgba(0,0,0,0.3), 0 0 20px rgba(255, 255, 255, 0.8);
-        z-index: 10;
-    }
+        .point-marker::before {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 2px solid white;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 0 1px rgba(0,0,0,0.2);
+        }
 
-    .point-marker::before {
-        content: '';
-        position: absolute;
-        width: 30px;
-        height: 30px;
-        border: 2px solid white;
-        border-radius: 50%;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        box-shadow: 0 0 0 1px rgba(0,0,0,0.2);
-    }
+        .measure-line {
+            position: absolute;
+            height: 4px;
+            background: white;
+            transform-origin: left center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            z-index: 5;
+        }
 
-    .measure-line {
-        position: absolute;
-        height: 4px;
-        background: white;
-        transform-origin: left center;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-        z-index: 5;
-    }
+        .measure-line::before,
+        .measure-line::after {
+            content: '';
+            position: absolute;
+            width: 3px;
+            height: 20px;
+            background: white;
+            top: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
 
-    .measure-line::before,
-    .measure-line::after {
-        content: '';
-        position: absolute;
-        width: 3px;
-        height: 20px;
-        background: white;
-        top: 50%;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-    }
+        .measure-line::before {
+            left: 0;
+            transform: translateY(-50%);
+        }
 
-    .measure-line::before {
-        left: 0;
-        transform: translateY(-50%);
-    }
+        .measure-line::after {
+            right: 0;
+            transform: translateY(-50%);
+        }
 
-    .measure-line::after {
-        right: 0;
-        transform: translateY(-50%);
-    }
+        .distance-label {
+            position: absolute;
+            background: white;
+            color: #000;
+            padding: 6px 16px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            transform: translate(-50%, -50%);
+            white-space: nowrap;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+            z-index: 15;
+        }
 
-    .distance-label {
-        position: absolute;
-        background: white;
-        color: #000;
-        padding: 6px 16px;
-        border-radius: 16px;
-        font-size: 16px;
-        font-weight: 700;
-        transform: translate(-50%, -50%);
-        white-space: nowrap;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.3);
-        z-index: 15;
-    }
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
 
-    .controls {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 15px;
-    }
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
 
-    button {
-        flex: 1;
-        padding: 15px;
-        border: none;
-        border-radius: 10px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s;
-    }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
 
-    .btn-primary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-    }
+        .btn-secondary {
+            background: #2a2a2a;
+            color: white;
+        }
 
-    .btn-secondary {
-        background: #2a2a2a;
-        color: white;
-    }
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
 
-    .btn-danger {
-        background: #ef4444;
-        color: white;
-    }
+        button:active {
+            transform: scale(0.95);
+        }
 
-    button:active {
-        transform: scale(0.95);
-    }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
 
-    button:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
+        .instruction {
+            text-align: center;
+            padding: 15px;
+            background: rgba(102, 126, 234, 0.2);
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
 
-    .instruction {
-        text-align: center;
-        padding: 15px;
-        background: rgba(102, 126, 234, 0.2);
-        border-radius: 10px;
-        margin-bottom: 15px;
-        font-size: 14px;
-        line-height: 1.6;
-    }
+        .crosshair {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            z-index: 8;
+        }
 
-    .crosshair {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 40px;
-        height: 40px;
-        z-index: 8;
-    }
+        .crosshair::before,
+        .crosshair::after {
+            content: '';
+            position: absolute;
+            background: white;
+            box-shadow: 0 0 4px rgba(0,0,0,0.5);
+        }
 
-    .crosshair::before,
-    .crosshair::after {
-        content: '';
-        position: absolute;
-        background: white;
-        box-shadow: 0 0 4px rgba(0,0,0,0.5);
-    }
+        .crosshair::before {
+            width: 2px;
+            height: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
 
-    .crosshair::before {
-        width: 2px;
-        height: 100%;
-        left: 50%;
-        transform: translateX(-50%);
-    }
+        .crosshair::after {
+            height: 2px;
+            width: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
 
-    .crosshair::after {
-        height: 2px;
-        width: 100%;
-        top: 50%;
-        transform: translateY(-50%);
-    }
+        .crosshair-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(255,255,255,0.8);
+        }
 
-    .crosshair-center {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 4px;
-        height: 4px;
-        background: white;
-        border-radius: 50%;
-        box-shadow: 0 0 8px rgba(255,255,255,0.8);
-    }
+        .content {
+            padding: 20px;
+        }
 
-    .content {
-        padding: 20px;
-    }
+        .measure-section {
+            background: #1a1a1a;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
 
-    .measure-section {
-        background: #1a1a1a;
-        border-radius: 15px;
-        padding: 20px;
-        margin-bottom: 20px;
-    }
+        .input-group {
+            margin-bottom: 15px;
+        }
 
-    .input-group {
-        margin-bottom: 15px;
-    }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #aaa;
+        }
 
-    label {
-        display: block;
-        margin-bottom: 8px;
-        font-size: 14px;
-        color: #aaa;
-    }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #333;
+            border-radius: 8px;
+            background: #2a2a2a;
+            color: white;
+            font-size: 16px;
+        }
 
-    input {
-        width: 100%;
-        padding: 12px;
-        border: 2px solid #333;
-        border-radius: 8px;
-        background: #2a2a2a;
-        color: white;
-        font-size: 16px;
-    }
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
 
-    input:focus {
-        outline: none;
-        border-color: #667eea;
-    }
+        .result-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
 
-    .result-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 15px;
-        padding: 20px;
-        margin-top: 20px;
-    }
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
 
-    .result-item {
-        display: flex;
-        justify-content: space-between;
-        padding: 12px 0;
-        border-bottom: 1px solid rgba(255,255,255,0.2);
-    }
+        .result-item:last-child {
+            border-bottom: none;
+        }
 
-    .result-item:last-child {
-        border-bottom: none;
-    }
+        .result-label {
+            font-size: 16px;
+        }
 
-    .result-label {
-        font-size: 16px;
-    }
+        .result-value {
+            font-size: 18px;
+            font-weight: 700;
+        }
 
-    .result-value {
-        font-size: 18px;
-        font-weight: 700;
-    }
+        .info-box {
+            background: #2a2a2a;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
 
-    .info-box {
-        background: #2a2a2a;
-        border-radius: 10px;
-        padding: 15px;
-        margin-top: 15px;
-        font-size: 14px;
-        line-height: 1.6;
-    }
+        .hidden {
+            display: none;
+        }
 
-    .hidden {
-        display: none;
-    }
+        .measurements-list {
+            background: #2a2a2a;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
 
-    .measurements-list {
-        background: #2a2a2a;
-        border-radius: 10px;
-        padding: 15px;
-        margin-bottom: 15px;
-    }
+        .measurement-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 8px;
+            background: #1a1a1a;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
 
-    .measurement-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px;
-        margin-bottom: 8px;
-        background: #1a1a1a;
-        border-radius: 8px;
-        border-left: 4px solid #667eea;
-    }
+        .status-text {
+            text-align: center;
+            padding: 10px;
+            background: rgba(102, 126, 234, 0.3);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
 
-    .status-text {
-        text-align: center;
-        padding: 10px;
-        background: rgba(102, 126, 234, 0.3);
-        border-radius: 8px;
-        margin-bottom: 10px;
-        font-weight: 600;
-    }
-
-    .ar-indicator {
-        position: absolute;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(0,0,0,0.8);
-        padding: 8px 15px;
-        border-radius: 20px;
-        font-size: 12px;
-        color: #10b981;
-        border: 1px solid #10b981;
-        z-index: 20;
-    }
-</style>
-
-
+        .ar-indicator {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #10b981;
+            border: 1px solid #10b981;
+            z-index: 20;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -356,204 +352,204 @@
             <p class="subtitle">Ukur Titik ke Titik - iPhone Style</p>
         </header>
 
-    <div class="camera-container">
-        <video id="video" autoplay playsinline></video>
-        <canvas id="canvas"></canvas>
-        <div class="crosshair">
-            <div class="crosshair-center"></div>
-        </div>
-        <div class="ar-indicator" id="arIndicator" style="display: none;">
-            🎯 AR Tracking Active
-        </div>
-    </div>
-
-    <div class="content">
-        <div class="status-text" id="status">
-            Klik tombol "Buka Kamera AR" untuk memulai
+        <div class="camera-container">
+            <video id="video" autoplay playsinline></video>
+            <canvas id="canvas"></canvas>
+            <div class="crosshair">
+                <div class="crosshair-center"></div>
+            </div>
+            <div class="ar-indicator" id="arIndicator" style="display: none;">
+                🎯 AR Tracking Active
+            </div>
         </div>
 
-        <div class="instruction">
-            <strong>📍 Cara Menggunakan (iPhone Measure Style):</strong><br>
-            1. Buka kamera AR dan arahkan ke area yang ingin diukur<br>
-            2. Gerakkan perangkat perlahan untuk tracking 3D<br>
-            3. Tap "Tandai Titik" untuk titik pertama<br>
-            4. Gerakkan ke titik kedua, lalu tap "Tandai Titik" lagi<br>
-            5. Jarak otomatis terhitung menggunakan sensor AR
-        </div>
-
-        <div class="controls">
-            <button class="btn-primary" id="startCamera">📷 Buka Kamera AR</button>
-            <button class="btn-secondary" id="markPoint" disabled>📍 Tandai Titik</button>
-            <button class="btn-danger" id="reset">🔄 Reset</button>
-        </div>
-
-        <div id="measurementsList" class="measurements-list hidden">
-            <h3 style="margin-bottom: 10px;">📏 Pengukuran:</h3>
-            <div id="measurementsContent"></div>
-        </div>
-
-        <div class="measure-section">
-            <h2 style="margin-bottom: 15px;">📊 Dimensi untuk Kalkulator</h2>
-            
-            <div class="input-group">
-                <label>Panjang (meter)</label>
-                <input type="number" id="panjang" step="0.01" placeholder="Dari pengukuran atau input manual">
+        <div class="content">
+            <div class="status-text" id="status">
+                Klik tombol "Buka Kamera AR" untuk memulai
             </div>
 
-            <div class="input-group">
-                <label>Lebar (meter)</label>
-                <input type="number" id="lebar" step="0.01" placeholder="Dari pengukuran atau input manual">
+            <div class="instruction">
+                <strong>📍 Cara Menggunakan (iPhone Measure Style):</strong><br>
+                1. Buka kamera AR dan arahkan ke area yang ingin diukur<br>
+                2. Gerakkan perangkat perlahan untuk tracking 3D<br>
+                3. Tap "Tandai Titik" untuk titik pertama<br>
+                4. Gerakkan ke titik kedua, lalu tap "Tandai Titik" lagi<br>
+                5. Jarak otomatis terhitung menggunakan sensor AR
             </div>
 
-            <div class="input-group">
-                <label>Tinggi (meter) - Opsional</label>
-                <input type="number" id="tinggi" step="0.01" placeholder="Untuk menghitung volume">
+            <div class="controls">
+                <button class="btn-primary" id="startCamera">📷 Buka Kamera AR</button>
+                <button class="btn-secondary" id="markPoint" disabled>📍 Tandai Titik</button>
+                <button class="btn-danger" id="reset">🔄 Reset</button>
             </div>
 
-            <button class="btn-primary" id="calculate" style="width: 100%; margin-top: 10px;">
-                🧮 Hitung Material
-            </button>
-        </div>
+            <div id="measurementsList" class="measurements-list hidden">
+                <h3 style="margin-bottom: 10px;">📏 Pengukuran:</h3>
+                <div id="measurementsContent"></div>
+            </div>
 
-        <div id="results" class="hidden">
-            <div class="result-card">
-                <h3 style="margin-bottom: 15px;">📦 Kebutuhan Material</h3>
+            <div class="measure-section">
+                <h2 style="margin-bottom: 15px;">📊 Dimensi untuk Kalkulator</h2>
                 
-                <div class="result-item">
-                    <span class="result-label">Luas Area</span>
-                    <span class="result-value" id="luas">0 m²</span>
+                <div class="input-group">
+                    <label>Panjang (meter)</label>
+                    <input type="number" id="panjang" step="0.01" placeholder="Dari pengukuran atau input manual">
                 </div>
 
-                <div class="result-item">
-                    <span class="result-label">Volume</span>
-                    <span class="result-value" id="volume">0 m³</span>
+                <div class="input-group">
+                    <label>Lebar (meter)</label>
+                    <input type="number" id="lebar" step="0.01" placeholder="Dari pengukuran atau input manual">
                 </div>
 
-                <div class="result-item">
-                    <span class="result-label">🧱 Hebel</span>
-                    <span class="result-value" id="hebel">0 buah</span>
+                <div class="input-group">
+                    <label>Tinggi (meter) - Opsional</label>
+                    <input type="number" id="tinggi" step="0.01" placeholder="Untuk menghitung volume">
                 </div>
 
-                <div class="result-item">
-                    <span class="result-label">🏗️ Semen</span>
-                    <span class="result-value" id="semen">0 zak</span>
-                </div>
-
-                <div class="result-item">
-                    <span class="result-label">🪨 Pasir</span>
-                    <span class="result-value" id="pasir">0 m³</span>
-                </div>
-
-                <div class="result-item">
-                    <span class="result-label">🎨 Acian</span>
-                    <span class="result-value" id="acian">0 zak</span>
-                </div>
+                <button class="btn-primary" id="calculate" style="width: 100%; margin-top: 10px;">
+                    🧮 Hitung Material
+                </button>
             </div>
 
-            <div class="info-box">
-                <strong>ℹ️ Catatan Perhitungan:</strong><br>
-                • Hebel: 8 buah/m² (ukuran 60x20cm)<br>
-                • Semen: 5-6 zak/m³ untuk pasangan dinding<br>
-                • Pasir: 0.5 m³ per m² untuk plesteran 2cm<br>
-                • Acian: 1 zak untuk 3-4 m² (ketebalan 2-3mm)
+            <div id="results" class="hidden">
+                <div class="result-card">
+                    <h3 style="margin-bottom: 15px;">📦 Kebutuhan Material</h3>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Luas Area</span>
+                        <span class="result-value" id="luas">0 m²</span>
+                    </div>
+
+                    <div class="result-item">
+                        <span class="result-label">Volume</span>
+                        <span class="result-value" id="volume">0 m³</span>
+                    </div>
+
+                    <div class="result-item">
+                        <span class="result-label">🧱 Hebel</span>
+                        <span class="result-value" id="hebel">0 buah</span>
+                    </div>
+
+                    <div class="result-item">
+                        <span class="result-label">🏗️ Semen</span>
+                        <span class="result-value" id="semen">0 zak</span>
+                    </div>
+
+                    <div class="result-item">
+                        <span class="result-label">🪨 Pasir</span>
+                        <span class="result-value" id="pasir">0 m³</span>
+                    </div>
+
+                    <div class="result-item">
+                        <span class="result-label">🎨 Acian</span>
+                        <span class="result-value" id="acian">0 zak</span>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <strong>ℹ️ Catatan Perhitungan:</strong><br>
+                    - Hebel: 8 buah/m² (ukuran 60x20cm)<br>
+                    - Semen: 5-6 zak/m³ untuk pasangan dinding<br>
+                    - Pasir: 0.5 m³ per m² untuk plesteran 2cm<br>
+                    - Acian: 1 zak untuk 3-4 m² (ketebalan 2-3mm)
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script>
-    let stream = null;
-    let points = [];
-    let measurements = [];
-    let cameraActive = false;
-    let orientationData = { alpha: 0, beta: 0, gamma: 0 };
-    let lastOrientation = null;
-    let cameraPosition = { x: 0, y: 0, z: 0 };
-    let virtualDepth = 2.0;
-    let permissionGranted = false;
-    let animationFrameId = null;
-    let tempLine = null;
-    let tempLabel = null;
+    <script>
+        let stream = null;
+        let points = [];
+        let measurements = [];
+        let cameraActive = false;
+        let orientationData = { alpha: 0, beta: 0, gamma: 0 };
+        let lastOrientation = null;
+        let cameraPosition = { x: 0, y: 0, z: 0 };
+        let virtualDepth = 2.0;
+        let permissionGranted = false;
+        let animationFrameId = null;
+        let tempLine = null;
+        let tempLabel = null;
 
-    const video = document.getElementById('video');
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    const statusText = document.getElementById('status');
-    const arIndicator = document.getElementById('arIndicator');
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const statusText = document.getElementById('status');
+        const arIndicator = document.getElementById('arIndicator');
 
-    function initOrientationTracking() {
-        if (window.DeviceOrientationEvent) {
-            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-                DeviceOrientationEvent.requestPermission()
-                    .then(permissionState => {
-                        if (permissionState === 'granted') {
-                            window.addEventListener('deviceorientation', handleOrientation);
-                            permissionGranted = true;
-                            arIndicator.style.display = 'block';
-                        }
-                    })
-                    .catch(console.error);
-            } else {
-                window.addEventListener('deviceorientation', handleOrientation);
-                permissionGranted = true;
-                arIndicator.style.display = 'block';
+        function initOrientationTracking() {
+            if (window.DeviceOrientationEvent) {
+                if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+                    DeviceOrientationEvent.requestPermission()
+                        .then(permissionState => {
+                            if (permissionState === 'granted') {
+                                window.addEventListener('deviceorientation', handleOrientation);
+                                permissionGranted = true;
+                                arIndicator.style.display = 'block';
+                            }
+                        })
+                        .catch(console.error);
+                } else {
+                    window.addEventListener('deviceorientation', handleOrientation);
+                    permissionGranted = true;
+                    arIndicator.style.display = 'block';
+                }
             }
         }
-    }
 
-    function handleOrientation(event) {
-        orientationData = {
-            alpha: event.alpha || 0,
-            beta: event.beta || 0,
-            gamma: event.gamma || 0
-        };
-
-        if (lastOrientation) {
-            const deltaAlpha = orientationData.alpha - lastOrientation.alpha;
-            const deltaBeta = orientationData.beta - lastOrientation.beta;
-            const deltaGamma = orientationData.gamma - lastOrientation.gamma;
-
-            cameraPosition.x += deltaGamma * 0.01;
-            cameraPosition.y += deltaBeta * 0.01;
-            cameraPosition.z += deltaAlpha * 0.01;
-        }
-
-        lastOrientation = { ...orientationData };
-
-        if (points.length === 1) {
-            updateDynamicLine();
-        }
-    }
-
-    document.getElementById('startCamera').addEventListener('click', async () => {
-        try {
-            initOrientationTracking();
-
-            stream = await navigator.mediaDevices.getUserMedia({
-                video: {
-                    facingMode: { ideal: 'environment' },
-                    width: { ideal: 1920 },
-                    height: { ideal: 1080 }
-                }
-            });
-            video.srcObject = stream;
-            
-            video.onloadedmetadata = () => {
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
-                cameraActive = true;
-                document.getElementById('markPoint').disabled = false;
-                statusText.textContent = '✅ AR Ready - Arahkan ke permukaan dan gerakkan perangkat';
-                document.getElementById('startCamera').textContent = '✅ AR Aktif';
-                document.getElementById('startCamera').style.background = '#10b981';
+        function handleOrientation(event) {
+            orientationData = {
+                alpha: event.alpha || 0,
+                beta: event.beta || 0,
+                gamma: event.gamma || 0
             };
 
-        } catch (err) {
-            alert('Tidak dapat mengakses kamera: ' + err.message);
-        }
-    });
+            if (lastOrientation) {
+                const deltaAlpha = orientationData.alpha - lastOrientation.alpha;
+                const deltaBeta = orientationData.beta - lastOrientation.beta;
+                const deltaGamma = orientationData.gamma - lastOrientation.gamma;
 
-    document.getElementById('markPoint').addEventListener('click', () => {
+                cameraPosition.x += deltaGamma * 0.01;
+                cameraPosition.y += deltaBeta * 0.01;
+                cameraPosition.z += deltaAlpha * 0.01;
+            }
+
+            lastOrientation = { ...orientationData };
+
+            if (points.length === 1) {
+                updateDynamicLine();  // Update garis penghubung dinamis saat perangkat bergerak
+            }
+        }
+
+        document.getElementById('startCamera').addEventListener('click', async () => {
+            try {
+                initOrientationTracking();
+
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: { ideal: 'environment' },
+                        width: { ideal: 1920 },
+                        height: { ideal: 1080 }
+                    }
+                });
+                video.srcObject = stream;
+                
+                video.onloadedmetadata = () => {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    cameraActive = true;
+                    document.getElementById('markPoint').disabled = false;
+                    statusText.textContent = '✅ AR Ready - Arahkan ke permukaan dan gerakkan perangkat';
+                    document.getElementById('startCamera').textContent = '✅ AR Aktif';
+                    document.getElementById('startCamera').style.background = '#10b981';
+                };
+
+            } catch (err) {
+                alert('Tidak dapat mengakses kamera: ' + err.message);
+            }
+        });
+
+        document.getElementById('markPoint').addEventListener('click', ()  => {
         if (!cameraActive) return;
 
         const point = {
