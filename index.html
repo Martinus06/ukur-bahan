@@ -53,7 +53,6 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transform: scaleX(1);
     }
 
     #canvas {
@@ -65,51 +64,73 @@
         pointer-events: none;
     }
 
-    .measure-overlay {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: linear-gradient(to top, rgba(0,0,0,0.95), transparent);
-        padding: 30px 20px 20px;
-    }
-
     .point-marker {
         position: absolute;
-        width: 20px;
-        height: 20px;
-        background: #667eea;
+        width: 12px;
+        height: 12px;
+        background: white;
         border: 3px solid white;
         border-radius: 50%;
         transform: translate(-50%, -50%);
-        animation: pulse 1s infinite;
-        box-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
+        box-shadow: 0 0 0 2px rgba(0,0,0,0.3), 0 0 20px rgba(255, 255, 255, 0.8);
+        z-index: 10;
     }
 
-    @keyframes pulse {
-        0%, 100% { transform: translate(-50%, -50%) scale(1); }
-        50% { transform: translate(-50%, -50%) scale(1.2); }
-    }
-
-    .line {
+    .point-marker::before {
+        content: '';
         position: absolute;
-        height: 3px;
-        background: linear-gradient(90deg, #667eea, #764ba2);
+        width: 30px;
+        height: 30px;
+        border: 2px solid white;
+        border-radius: 50%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        box-shadow: 0 0 0 1px rgba(0,0,0,0.2);
+    }
+
+    .measure-line {
+        position: absolute;
+        height: 4px;
+        background: white;
         transform-origin: left center;
-        box-shadow: 0 0 10px rgba(102, 126, 234, 0.6);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        z-index: 5;
+    }
+
+    .measure-line::before,
+    .measure-line::after {
+        content: '';
+        position: absolute;
+        width: 3px;
+        height: 20px;
+        background: white;
+        top: 50%;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .measure-line::before {
+        left: 0;
+        transform: translateY(-50%);
+    }
+
+    .measure-line::after {
+        right: 0;
+        transform: translateY(-50%);
     }
 
     .distance-label {
         position: absolute;
-        background: rgba(0,0,0,0.9);
-        padding: 8px 15px;
-        border-radius: 20px;
-        font-size: 18px;
+        background: white;
+        color: #000;
+        padding: 6px 16px;
+        border-radius: 16px;
+        font-size: 16px;
         font-weight: 700;
-        color: #667eea;
-        border: 2px solid #667eea;
         transform: translate(-50%, -50%);
         white-space: nowrap;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+        z-index: 15;
     }
 
     .controls {
@@ -168,31 +189,31 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 30px;
-        height: 30px;
+        width: 40px;
+        height: 40px;
+        z-index: 8;
     }
 
     .crosshair::before,
     .crosshair::after {
         content: '';
         position: absolute;
-        background: #667eea;
+        background: white;
+        box-shadow: 0 0 4px rgba(0,0,0,0.5);
     }
 
     .crosshair::before {
-        width: 3px;
+        width: 2px;
         height: 100%;
         left: 50%;
         transform: translateX(-50%);
-        box-shadow: 0 0 10px #667eea;
     }
 
     .crosshair::after {
-        height: 3px;
+        height: 2px;
         width: 100%;
         top: 50%;
         transform: translateY(-50%);
-        box-shadow: 0 0 10px #667eea;
     }
 
     .crosshair-center {
@@ -200,11 +221,11 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 8px;
-        height: 8px;
-        background: #667eea;
+        width: 4px;
+        height: 4px;
+        background: white;
         border-radius: 50%;
-        box-shadow: 0 0 15px #667eea;
+        box-shadow: 0 0 8px rgba(255,255,255,0.8);
     }
 
     .content {
@@ -242,10 +263,6 @@
     input:focus {
         outline: none;
         border-color: #667eea;
-    }
-
-    input:disabled {
-        opacity: 0.5;
     }
 
     .result-card {
@@ -326,6 +343,7 @@
         font-size: 12px;
         color: #10b981;
         border: 1px solid #10b981;
+        z-index: 20;
     }
 </style>
 
@@ -337,7 +355,6 @@
             <h1>📐 Pengukur AR</h1>
             <p class="subtitle">Ukur Titik ke Titik - iPhone Style</p>
         </header>
-
 
     <div class="camera-container">
         <video id="video" autoplay playsinline></video>
@@ -639,9 +656,7 @@
         const p1 = points[0];
         
         tempLine = document.createElement('div');
-        tempLine.className = 'line';
-        tempLine.style.opacity = '0.7';
-        tempLine.style.background = 'linear-gradient(90deg, #667eea, #fbbf24)';
+        tempLine.className = 'measure-line';
         
         const x1 = (p1.x / canvas.width * 100);
         const y1 = (p1.y / canvas.height * 100);
@@ -660,10 +675,7 @@
 
         tempLabel = document.createElement('div');
         tempLabel.className = 'distance-label';
-        tempLabel.style.background = 'rgba(0,0,0,0.7)';
-        tempLabel.style.borderColor = '#fbbf24';
-        tempLabel.style.color = '#fbbf24';
-        tempLabel.textContent = `${tempDistance.toFixed(2)} m`;
+        tempLabel.textContent = `${(tempDistance * 100).toFixed(0)} cm`;
         tempLabel.style.left = ((x1 + x2) / 2) + '%';
         tempLabel.style.top = ((y1 + y2) / 2) + '%';
         document.querySelector('.camera-container').appendChild(tempLabel);
@@ -693,18 +705,12 @@
         marker.className = 'point-marker';
         marker.style.left = (x / canvas.width * 100) + '%';
         marker.style.top = (y / canvas.height * 100) + '%';
-        marker.textContent = number;
-        marker.style.display = 'flex';
-        marker.style.alignItems = 'center';
-        marker.style.justifyContent = 'center';
-        marker.style.fontSize = '12px';
-        marker.style.fontWeight = 'bold';
         document.querySelector('.camera-container').appendChild(marker);
     }
 
     function drawLine(p1, p2, distance) {
         const line = document.createElement('div');
-        line.className = 'line';
+        line.className = 'measure-line';
         
         const x1 = (p1.x / canvas.width * 100);
         const y1 = (p1.y / canvas.height * 100);
@@ -723,7 +729,7 @@
 
         const label = document.createElement('div');
         label.className = 'distance-label';
-        label.textContent = `${distance.toFixed(2)} m`;
+        label.textContent = `${(distance * 100).toFixed(0)} cm`;
         label.style.left = ((x1 + x2) / 2) + '%';
         label.style.top = ((y1 + y2) / 2) + '%';
         document.querySelector('.camera-container').appendChild(label);
@@ -760,7 +766,7 @@
         stopDynamicLine();
         points = [];
         measurements = [];
-        document.querySelectorAll('.point-marker, .line, .distance-label').forEach(el => el.remove());
+        document.querySelectorAll('.point-marker, .measure-line, .distance-label').forEach(el => el.remove());
         document.getElementById('measurementsList').classList.add('hidden');
         statusText.textContent = cameraActive ? '📍 Tandai titik pertama' : 'Klik tombol "Buka Kamera AR" untuk memulai';
     });
